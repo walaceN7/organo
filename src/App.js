@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Banner from './components/Banner';
 import Formulario from './components/Formulario';
 import Time from './components/Time';
@@ -241,8 +241,16 @@ function App() {
     },
   ]
 
-  const [colaboradores, setColaboradores] = useState(inicial);
+  const [colaboradores, setColaboradores] = useState([]);
   const [visivel, setVisivel] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/colaboradores")
+      .then(resposta => resposta.json())
+      .then(dados => {
+        setColaboradores(dados);
+      })
+  }, []);
 
   const aoNovoColaboradorAdicionado = (colaborador) => {    
     setColaboradores([...colaboradores, colaborador]);
@@ -253,6 +261,10 @@ function App() {
   }
 
   function deletarColaborador(id){
+    fetch(`http://localhost:8080/colaboradores/${id}`, {
+      method: 'DELETE'      
+    });
+    
     setColaboradores(colaboradores.filter(colaborador => colaborador.id !== id));
   }
 
@@ -287,7 +299,17 @@ function App() {
           visivel={visivel}
           cadastrarTime={cadastrarTime}
           times={times.map(time => time.nome)} 
-          aoCadastrar={colaborador => setColaboradores([...colaboradores, colaborador])} 
+          aoCadastrar={colaborador => {
+            fetch("http://localhost:8080/colaboradores", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(colaborador)
+            });
+
+            setColaboradores([...colaboradores, colaborador])
+          }} 
        />     
 
       <Titulo esconderFormulario={aoEsconderFormulario} />
