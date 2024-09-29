@@ -4,6 +4,7 @@ import Formulario from './components/Formulario';
 import Time from './components/Time';
 import Rodape from './components/Rodape';
 import { v4 as uuidv4 } from 'uuid';
+import Titulo from './components/Titulo';
 
 function App() {
 
@@ -241,9 +242,14 @@ function App() {
   ]
 
   const [colaboradores, setColaboradores] = useState(inicial);
+  const [visivel, setVisivel] = useState(true);
 
   const aoNovoColaboradorAdicionado = (colaborador) => {    
     setColaboradores([...colaboradores, colaborador]);
+  }
+
+  function aoEsconderFormulario(){
+    setVisivel(!visivel);
   }
 
   function deletarColaborador(id){
@@ -278,10 +284,13 @@ function App() {
       <Banner />      
 
       <Formulario 
-        cadastrarTime={cadastrarTime}
-        times={times.map(time => time.nome)} 
-        aoCadastrar={colaborador => setColaboradores([...colaboradores, colaborador])} 
-      />     
+          visivel={visivel}
+          cadastrarTime={cadastrarTime}
+          times={times.map(time => time.nome)} 
+          aoCadastrar={colaborador => setColaboradores([...colaboradores, colaborador])} 
+       />     
+
+      <Titulo esconderFormulario={aoEsconderFormulario} />
 
       {times.map(time => 
             <Time 
